@@ -140,3 +140,10 @@ retraining, seeds, ablations, Fig. 5/6) has a ready-to-run script, but was
 ## Housekeeping
 - Ultralytics rewrote `drone_dataset/{train,valid}/labels.cache` during validation. Both were restored to the committed version with `git checkout -- <file>`.
 - Large outputs (checkpoints, run folders, runtime YAMLs) are excluded by `revision/.gitignore`.
+
+---
+
+## Follow-up: single-layer placement cost (`c13b_placement_cost.py` → `results/c13b_placement_cost.json`)
+- Measured without training: CBAM @ L12 only = +51,299 params / +0.0005 GFLOPs; @ L15 only = +12,899 / +0.0013; both = +64,198 / +0.0018 (matches a3/a4).
+- CPU latency per placement was measured (interleaved, 40 runs), but the differences (−1.55 to +26.44 ms) are inside the noise (std 50–65 ms), so they are not used in the paper.
+- Table V (`d_fill_tables.py`) now shows measured +Params and +GFLOPs for every row. Its accuracy columns still need `c13_placement_ablation.py` on a GPU.

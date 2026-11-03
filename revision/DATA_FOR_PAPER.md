@@ -185,6 +185,23 @@ AP by size ⏳ (needs trained checkpoints; run `b7_ap_by_size.py`):
 
 ---
 
+## 10b. CBAM at Layer 12 vs Layer 15 separately (R1-7)
+
+Cost ✅ (`results/c13b_placement_cost.json`, no training needed):
+
+| Placement | Feature map | Added params | Added GFLOPs | Accuracy |
+|---|---|---|---|---|
+| CBAM @ L12 only | 640 × 40 × 40 | **+51,299** | **+0.0005** | ⏳ |
+| CBAM @ L15 only | 320 × 80 × 80 | **+12,899** | **+0.0013** | ⏳ |
+| CBAM @ L12 + L15 (paper) | both | **+64,198** | **+0.0018** | ⏳ (paper: 92.93 / 57.10 on old split) |
+
+- L12 holds 80 % of the parameters (the channel MLP scales with C², and C = 640). L15 holds 70 % of the compute,
+  because spatial attention runs on the larger 80 × 80 map.
+- CPU latency differences between placements (−1.6 to +26 ms) are below the run-to-run noise (std 50–65 ms), so
+  do not report them; use the GPU numbers once available.
+- Accuracy ⏳: `python revision/c13_placement_ablation.py` (runs `yolov8x_cbam_L12_s0` and `yolov8x_cbam_L15_s0`,
+  ~2 GPU runs) → fills Table V automatically.
+
 ## 11. Text-only changes (no new data)
 
 | Reviewer ask | What to write |

@@ -27,6 +27,7 @@ This folder holds everything that was done for the revision. Your original files
 | `c11_train_sota.py` | YOLOv5x, YOLO11x, RT-DETR-X comparison | GPU | `results/c11_sota.{csv,json}` |
 | `c12_train_seeds.py` | Baseline + CBAM × 3 seeds, mean ± std | GPU | `results/c12_seeds.{csv,json}` |
 | `c13_placement_ablation.py` | CBAM @12 / @15 / both, SE, CoordAtt | GPU | `results/c13_ablation.{csv,json}` |
+| `c13b_placement_cost.py` | Params / GFLOPs of CBAM @ L12, @ L15, @ both | CPU | `results/c13b_placement_cost.json` |
 | `d_make_figures.py` | Figs. 2, 4, 5, 6 with large fonts | (weights for 5/6) | `figures/*.pdf` |
 | `d_fill_tables.py` | LaTeX tables straight from the JSON results | – | `tables/*.tex` |
 
