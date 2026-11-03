@@ -1,0 +1,141 @@
+{
+  "colab_ablation_train_calls": [
+    {
+      "data": "DATA_YAML",
+      "epochs": 1,
+      "imgsz": 640,
+      "batch": 16,
+      "optimizer": "SGD",
+      "lr0": 0.01,
+      "momentum": 0.937,
+      "weight_decay": 0.0005,
+      "seed": 0,
+      "deterministic": true,
+      "amp": true,
+      "workers": "2 if IN_COLAB else 0",
+      "name": "run_name",
+      "project": "OUTPUT_DRIVE_PATH",
+      "exist_ok": true
+    },
+    {
+      "resume": true
+    },
+    {
+      "data": "DATA_YAML",
+      "epochs": 32,
+      "imgsz": 640,
+      "batch": 16,
+      "optimizer": "SGD",
+      "lr0": 0.01,
+      "momentum": 0.937,
+      "weight_decay": 0.0005,
+      "seed": 0,
+      "deterministic": true,
+      "amp": true,
+      "workers": "2 if IN_COLAB else 0",
+      "name": "run_name",
+      "project": "OUTPUT_DRIVE_PATH",
+      "exist_ok": true
+    }
+  ],
+  "colab_ablation_val_calls": [
+    {
+      "data": "DATA_YAML",
+      "imgsz": 640,
+      "batch": 16,
+      "conf": 0.001,
+      "iou": 0.7
+    },
+    {
+      "data": "DATA_YAML",
+      "imgsz": 640,
+      "batch": 16,
+      "conf": 0.001,
+      "iou": 0.7
+    }
+  ],
+  "colab_ablation_checkpoint_evaluated": "best.pt",
+  "colab_ablation_gflops_is_hardcoded": [
+    "'gflops': 258.1 if mode == 'none' else 258.5, # YOLOv8x GFLOPs",
+    "f\"| `{r['run_name']}` | **{r['mode'].upper()}** | {r['seed']} | {r['params_m']} | {r['gflops']} | \""
+  ],
+  "baseline_2023_args": {
+    "model": "yolov8x.pt",
+    "epochs": 32,
+    "batch": 16,
+    "imgsz": 640,
+    "optimizer": "auto",
+    "lr0": 0.01,
+    "lrf": 0.01,
+    "momentum": 0.937,
+    "weight_decay": 0.0005,
+    "seed": 0,
+    "conf": null,
+    "iou": 0.7,
+    "max_det": 300,
+    "mosaic": 1.0,
+    "close_mosaic": 10,
+    "fliplr": 0.5,
+    "hsv_h": 0.015,
+    "hsv_s": 0.7,
+    "hsv_v": 0.4,
+    "scale": 0.5,
+    "translate": 0.1
+  },
+  "baseline_2023_ultralytics_version": [
+    "Ultralytics YOLOv8.0.141"
+  ],
+  "baseline_2023_optimizer_actually_used": [
+    [
+      "AdamW",
+      "0.002",
+      "0.9"
+    ]
+  ],
+  "baseline_2023_gpu": [
+    [
+      "Tesla T4",
+      "15102"
+    ]
+  ],
+  "baseline_2023_epochs_in_results_csv": 32,
+  "baseline_2023_best_epoch_by_fitness": 31,
+  "baseline_2023_last_epoch_metrics_percent": {
+    "P": 86.819,
+    "R": 83.898,
+    "mAP50": 89.22099999999999,
+    "mAP50_95": 53.759
+  },
+  "paper_table3_M1": {
+    "P": 86.82,
+    "R": 83.9,
+    "mAP50": 89.22,
+    "mAP50_95": 53.76
+  },
+  "paper_M1_equals_2023_run_last_epoch": true,
+  "lr0_inferred_from_logged_schedule": 0.001999838383838384,
+  "results_csv_epoch0": {
+    "train/box_loss": 1.6152,
+    "train/cls_loss": 1.5597,
+    "metrics/precision(B)": 0.68027,
+    "metrics/recall(B)": 0.55285,
+    "metrics/mAP50(B)": 0.60564,
+    "val/box_loss": 1.8123
+  },
+  "findings": [
+    "Training length: colab_ablation.py uses epochs=32 and the 2023 run logged 32 epochs. Nothing ran for 60 epochs -> the Fig. 4 caption '60' is wrong; it should be 32.",
+    "Checkpoint: colab_ablation.py validates weights/best.pt (Ultralytics best = max 0.1*mAP50+0.9*mAP50-95).",
+    "Validation thresholds: conf=0.001, NMS IoU=0.7 (Ultralytics defaults for mAP). Confusion matrix in Ultralytics uses conf=0.25 and IoU-match 0.45 (see a6).",
+    "Paper M1 row equals the LAST epoch of the 2023 run: True. That run used Ultralytics ['Ultralytics YOLOv8.0.141'] with optimizer=auto -> [('AdamW', '0.002', '0.9')], NOT 'SGD momentum 0.937, lr0 0.01' as Table II states.",
+    "colab_ablation.py hard-codes GFLOPs (258.1 baseline / 258.5 attention) instead of measuring them."
+  ],
+  "_meta": {
+    "script": "a5_training_settings.py",
+    "created": "2026-11-03T17:40:01",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

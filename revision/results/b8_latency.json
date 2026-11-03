@@ -1,0 +1,37 @@
+{
+  "CPU (x86_64, 4 threads)": {
+    "device": "CPU (x86_64, 4 threads)",
+    "precision": "FP32",
+    "batch": 1,
+    "imgsz": 640,
+    "scope": "network forward only (no NMS), Conv+BN fused, interleaved timing",
+    "torch": "2.15.0+cu132",
+    "models": {
+      "none": {
+        "median_ms": 604.5930090001548,
+        "mean_ms": 607.3763261999943,
+        "std_ms": 57.9046258718367,
+        "fps_from_median": 1.6540052318066814,
+        "runs": 60
+      },
+      "cbam": {
+        "median_ms": 606.9094579999046,
+        "mean_ms": 611.1296303666526,
+        "std_ms": 49.75984405948122,
+        "fps_from_median": 1.64769223286706,
+        "runs": 60
+      }
+    },
+    "cbam_overhead_ms_median_paired": 7.667959999935192,
+    "cbam_overhead_percent_of_baseline_median": 1.268284595717717
+  },
+  "_meta": {
+    "script": "b8_latency.py",
+    "created": "2026-11-03T17:46:40",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

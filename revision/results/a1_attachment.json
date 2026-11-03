@@ -1,0 +1,42 @@
+{
+  "Q0_stock_train_keeps_wrapper": false,
+  "Q0_explanation": "Stock Ultralytics rebuilds the network from yolov8x.yaml at the start of train(), so a wrapper added beforehand is dropped unless the trainer is customised (your fork must patch this; attention_modules.make_attention_trainer does it here).",
+  "Q1_base_trainable_params": 68153555,
+  "Q1_base_frozen_params": 16,
+  "Q1_answer": "trained together (fine-tuned end-to-end); only the fixed 16-weight DFL conv is frozen",
+  "Q2_cbam_param_tensors": [
+    "model.12.attn_block.gamma",
+    "model.12.attn_block.attention.channel.mlp.0.weight",
+    "model.12.attn_block.attention.channel.mlp.2.weight",
+    "model.12.attn_block.attention.spatial.conv.weight",
+    "model.15.attn_block.gamma",
+    "model.15.attn_block.attention.channel.mlp.0.weight",
+    "model.15.attn_block.attention.channel.mlp.2.weight",
+    "model.15.attn_block.attention.spatial.conv.weight"
+  ],
+  "Q2_missing_current_ultralytics": [],
+  "Q2_missing_old_8_0_rule": [
+    "model.12.attn_block.gamma",
+    "model.15.attn_block.gamma"
+  ],
+  "Q3_wrapper_after_reload": true,
+  "Q3_gamma_after_reload": [
+    0.5,
+    0.25
+  ],
+  "Q3_max_output_diff_fp16_roundtrip": 0.00152587890625,
+  "Q4_onnx_export_ok": true,
+  "Q4_onnx_vs_torch_max_abs_diff": 0.00096893310546875,
+  "Q4_onnx_file_MB": 273.01,
+  "how_attached": "Module replacement, not a PyTorch forward hook: model.model[12] and model.model[15] (C2f blocks) are each replaced by AttentionLayerWrapper(layer, ResidualAttentionBlock(CBAM)). Forward = layer(x), then y + gamma*(CBAM(y) - y) with gamma initialised to 0 (identity at start).",
+  "note": "Run on the reference re-implementation in revision/attention_modules.py, because your original ultralytics/nn/modules/cbam.py was not in the repository.",
+  "_meta": {
+    "script": "a1_attachment_check.py",
+    "created": "2026-11-03T17:37:03",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

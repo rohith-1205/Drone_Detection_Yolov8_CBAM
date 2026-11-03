@@ -1,0 +1,29 @@
+{
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "summary": {
+    "none": {
+      "status": "incomplete",
+      "finished_runs": 0,
+      "needed": 3
+    },
+    "cbam": {
+      "status": "incomplete",
+      "finished_runs": 0,
+      "needed": 3
+    }
+  },
+  "std": "sample standard deviation (n-1)",
+  "_meta": {
+    "script": "c12_train_seeds.py",
+    "created": "2026-11-03T18:12:13",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

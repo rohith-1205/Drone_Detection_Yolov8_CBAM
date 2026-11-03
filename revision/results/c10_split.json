@@ -1,0 +1,76 @@
+{
+  "seed": 0,
+  "targets": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "same_scene_bits": 10,
+  "clip_gap_frames": 100,
+  "n_images": 1359,
+  "n_groups": 979,
+  "largest_group": 71,
+  "cross_split_pairs_within_10_bits": {},
+  "splits": {
+    "train": {
+      "images": 975,
+      "fraction": 0.717439293598234,
+      "boxes": 1042,
+      "sources": {
+        "pic": 605,
+        "scene": 71,
+        "yoto": 61,
+        "numeric": 137,
+        "foto": 101
+      },
+      "from_original_split": {
+        "train": 714,
+        "valid": 261
+      }
+    },
+    "val": {
+      "images": 197,
+      "fraction": 0.14495952906548934,
+      "boxes": 235,
+      "sources": {
+        "pic": 141,
+        "yoto": 17,
+        "numeric": 25,
+        "foto": 14
+      },
+      "from_original_split": {
+        "train": 156,
+        "valid": 41
+      }
+    },
+    "test": {
+      "images": 187,
+      "fraction": 0.13760117733627666,
+      "boxes": 209,
+      "sources": {
+        "pic": 134,
+        "yoto": 11,
+        "numeric": 24,
+        "foto": 18
+      },
+      "from_original_split": {
+        "train": 142,
+        "valid": 45
+      }
+    }
+  },
+  "files": [
+    "splits/scene_split/train.txt",
+    "splits/scene_split/val.txt",
+    "splits/scene_split/test.txt"
+  ],
+  "_meta": {
+    "script": "c10_make_split.py",
+    "created": "2026-11-03T17:48:14",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

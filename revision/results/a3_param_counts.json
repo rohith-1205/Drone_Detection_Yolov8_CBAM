@@ -1,0 +1,152 @@
+{
+  "baseline_params": 68153571,
+  "variants": {
+    "channel": {
+      "per_layer": {
+        "layer_12": {
+          "channels": 640,
+          "attention_params": 51200,
+          "gamma_params": 1,
+          "total": 51201
+        },
+        "layer_15": {
+          "channels": 320,
+          "attention_params": 12800,
+          "gamma_params": 1,
+          "total": 12801
+        }
+      },
+      "total_params": 68217573,
+      "added_params": 64002,
+      "added_percent": 0.09390850554257825
+    },
+    "spatial": {
+      "per_layer": {
+        "layer_12": {
+          "channels": 640,
+          "attention_params": 98,
+          "gamma_params": 1,
+          "total": 99
+        },
+        "layer_15": {
+          "channels": 320,
+          "attention_params": 98,
+          "gamma_params": 1,
+          "total": 99
+        }
+      },
+      "total_params": 68153769,
+      "added_params": 198,
+      "added_percent": 0.0002905203602610933
+    },
+    "cbam": {
+      "per_layer": {
+        "layer_12": {
+          "channels": 640,
+          "attention_params": 51298,
+          "gamma_params": 1,
+          "total": 51299
+        },
+        "layer_15": {
+          "channels": 320,
+          "attention_params": 12898,
+          "gamma_params": 1,
+          "total": 12899
+        }
+      },
+      "total_params": 68217769,
+      "added_params": 64198,
+      "added_percent": 0.09419609135374579
+    },
+    "se": {
+      "per_layer": {
+        "layer_12": {
+          "channels": 640,
+          "attention_params": 51880,
+          "gamma_params": 1,
+          "total": 51881
+        },
+        "layer_15": {
+          "channels": 320,
+          "attention_params": 13140,
+          "gamma_params": 1,
+          "total": 13141
+        }
+      },
+      "total_params": 68218593,
+      "added_params": 65022,
+      "added_percent": 0.09540512558028691
+    },
+    "coord": {
+      "per_layer": {
+        "layer_12": {
+          "channels": 640,
+          "attention_params": 39740,
+          "gamma_params": 1,
+          "total": 39741
+        },
+        "layer_15": {
+          "channels": 320,
+          "attention_params": 10270,
+          "gamma_params": 1,
+          "total": 10271
+        }
+      },
+      "total_params": 68203583,
+      "added_params": 50012,
+      "added_percent": 0.0733813346332212
+    }
+  },
+  "channel_mlp_layers": [
+    "Conv2d",
+    "ReLU",
+    "Conv2d"
+  ],
+  "channel_mlp_has_relu_between_W0_W1": true,
+  "hand_calculation": {
+    "actual_channels_640_320": {
+      "layer_12": {
+        "W0": 25600,
+        "W1": 25600,
+        "spatial_conv": 98,
+        "gamma": 1,
+        "total": 51299
+      },
+      "layer_15": {
+        "W0": 6400,
+        "W1": 6400,
+        "spatial_conv": 98,
+        "gamma": 1,
+        "total": 12899
+      }
+    },
+    "paper_channels_512_256": {
+      "layer_12": {
+        "W0": 16384,
+        "W1": 16384,
+        "spatial_conv": 98,
+        "gamma": 1,
+        "total": 32867
+      },
+      "layer_15": {
+        "W0": 4096,
+        "W1": 4096,
+        "spatial_conv": 98,
+        "gamma": 1,
+        "total": 8291
+      }
+    },
+    "actual_total": 64198,
+    "paper_channel_total": 41158
+  },
+  "note": "Counts are for the reference implementation in attention_modules.py (bias-free MLP, bias-free 7x7 conv, one gamma per block). If your original cbam.py used MLP biases, add C/r + C per block.",
+  "_meta": {
+    "script": "a3_param_counts.py",
+    "created": "2026-11-03T17:38:00",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

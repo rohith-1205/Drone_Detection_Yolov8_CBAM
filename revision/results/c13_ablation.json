@@ -1,0 +1,63 @@
+{
+  "rows": [
+    {
+      "config": "None (baseline)",
+      "run": "yolov8x_none_s0",
+      "status": "skipped",
+      "params": null,
+      "GFLOPs": null,
+      "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+    },
+    {
+      "config": "CBAM @ L12",
+      "run": "yolov8x_cbam_L12_s0",
+      "status": "skipped",
+      "params": null,
+      "GFLOPs": null,
+      "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+    },
+    {
+      "config": "CBAM @ L15",
+      "run": "yolov8x_cbam_L15_s0",
+      "status": "skipped",
+      "params": null,
+      "GFLOPs": null,
+      "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+    },
+    {
+      "config": "CBAM @ L12+L15",
+      "run": "yolov8x_cbam_s0",
+      "status": "skipped",
+      "params": null,
+      "GFLOPs": null,
+      "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+    },
+    {
+      "config": "SE @ L12+L15",
+      "run": "yolov8x_se_s0",
+      "status": "skipped",
+      "params": null,
+      "GFLOPs": null,
+      "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+    },
+    {
+      "config": "CoordAtt @ L12+L15",
+      "run": "yolov8x_coord_s0",
+      "status": "skipped",
+      "params": null,
+      "GFLOPs": null,
+      "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+    }
+  ],
+  "seed": 0,
+  "split": "splits/scene_split (test)",
+  "_meta": {
+    "script": "c13_placement_ablation.py",
+    "created": "2026-11-03T18:12:15",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

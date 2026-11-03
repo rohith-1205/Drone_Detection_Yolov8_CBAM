@@ -1,0 +1,13 @@
+{
+  "name": "yolov8x_cbam_L15_s0",
+  "weights": "yolov8x.pt",
+  "attention": "cbam",
+  "layers": [
+    15
+  ],
+  "seed": 0,
+  "family": "yolo",
+  "smoke_test": false,
+  "status": "skipped",
+  "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+}

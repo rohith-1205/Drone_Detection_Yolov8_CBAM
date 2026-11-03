@@ -1,0 +1,18 @@
+# Large or machine-specific outputs - never commit these
+results/c_train_runs/
+results/c_test_runs/
+results/a6_runs/
+results/b7_runs/
+results/_runtime/
+results/_*.json
+results/_*.yaml
+*.pt
+*.onnx
+# LaTeX build files
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+__pycache__/

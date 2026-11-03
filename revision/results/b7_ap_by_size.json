@@ -1,0 +1,36 @@
+{
+  "val_boxes_per_bucket_at_640": {
+    "small": 25,
+    "medium": 42,
+    "large": 302
+  },
+  "val_boxes_percent": {
+    "small": 6.775067750677507,
+    "medium": 11.382113821138212,
+    "large": 81.84281842818429
+  },
+  "thresholds_px2": {
+    "small_lt": 1024,
+    "large_ge": 9216
+  },
+  "models": {
+    "baseline": {
+      "status": "skipped",
+      "reason": "checkpoint not found: /home/user/weights/drone_baseline_best.pt"
+    },
+    "cbam": {
+      "status": "skipped",
+      "reason": "checkpoint not found: /home/user/weights/drone_cbam_best.pt"
+    }
+  },
+  "note": "AP/AR = -1 means there are no ground-truth boxes in that bucket (pycocotools convention).",
+  "_meta": {
+    "script": "b7_ap_by_size.py",
+    "created": "2026-11-03T18:19:43",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "validation_runs": {
+    "baseline": {
+      "status": "skipped",
+      "reason": "checkpoint not found at /home/user/weights/drone_baseline_best.pt (set BASELINE_WEIGHTS=...)"
+    },
+    "cbam": {
+      "status": "skipped",
+      "reason": "checkpoint not found at /home/user/weights/drone_cbam_best.pt (set CBAM_WEIGHTS=...)"
+    }
+  },
+  "confusion_matrix_analysis": {
+    "counts_on_paper_fig5a": {
+      "TP": 320,
+      "FP": 48,
+      "FN": 49
+    },
+    "validation_boxes_in_dataset": 369,
+    "TP_plus_FN": 369,
+    "precision_from_matrix_percent": 86.95652173913044,
+    "recall_from_matrix_percent": 86.72086720867209,
+    "paper_table3_M4_cbam": {
+      "P": 91.3,
+      "R": 88.75
+    },
+    "paper_table3_M1_baseline": {
+      "P": 86.82,
+      "R": 83.9
+    },
+    "ultralytics_8.0.141_confusion_matrix_threshold": {
+      "conf": 0.25,
+      "iou_match": 0.45
+    },
+    "ultralytics_P_R_operating_point": "P and R in the metrics table are read at the confidence that maximises the mean F1 over the validation run (validator conf=0.001, NMS IoU=0.7).",
+    "finding_1": "The matrix (conf 0.25) and the table (max-F1 confidence) use different operating points, so their P/R legitimately differ.",
+    "finding_2": "More important: the Fig. 5(a) counts are IDENTICAL to the confusion_matrix.png of the 2023 plain YOLOv8x run (no CBAM), and Fig. 5(b)'s legend reads 'all classes 0.892 mAP@0.5' = the baseline's 89.2 %, not CBAM's claimed 92.93 %. Fig. 5 therefore shows the BASELINE model."
+  },
+  "_meta": {
+    "script": "a6_validate.py",
+    "created": "2026-11-03T18:19:41",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

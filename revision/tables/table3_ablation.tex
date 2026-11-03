@@ -1,0 +1,22 @@
+\begin{table*}[!t]
+\centering
+\caption{Ablation of attention configurations on the original validation split (347 images). Params and GFLOPs are
+measured for the 1-class model ($640\times640$, GFLOPs $=2\times$MACs, thop); accuracy values are those of the submitted
+version. Gains are in percentage points (pp).}
+\label{tab:ablation}
+\begin{tabular}{lrrcccc}
+\toprule
+Configuration & Params & GFLOPs & P (\%) & R (\%) & mAP@0.5 (\%) & mAP@0.5:0.95 (\%) \\
+\midrule
+M1: Baseline$^{\dagger}$ & 68,153,571 & 258.1123 & 86.82 & 83.90 & 89.22 & 53.76 \\
+M2: Channel-only & 68,217,573 & 258.1126 & 88.54 & 85.12 & 90.71 & 54.92 \\
+M3: Spatial-only & 68,153,769 & 258.1139 & 89.15 & 86.40 & 91.25 & 55.43 \\
+M4: YOLOv8x-CBAM & 68,217,769 & 258.1141 & 91.30 & 88.75 & 92.93 & 57.10 \\
+\midrule
+Gain (M4$-$M1) & +64,198 & +0.0018 & +4.48 pp & +4.85 pp & +3.71 pp & +3.34 pp \\
+\bottomrule
+\end{tabular}\\[2pt]
+\footnotesize{$^{\dagger}$M1 is the final epoch of a separate run made with Ultralytics 8.0.141 and \texttt{optimizer=auto}
+(AdamW, $\eta_0=0.002$), whereas the ablation script used for M2--M4 specifies SGD ($\eta_0=0.01$); no raw outputs of
+M2--M4 were retained. The matched-protocol comparison on a leakage-free split is Table~\ref{tab:seeds}.}
+\end{table*}

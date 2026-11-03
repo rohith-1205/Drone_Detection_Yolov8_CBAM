@@ -1,0 +1,44 @@
+{
+  "rows": [
+    {
+      "model": "YOLOv5x (u)",
+      "run": "yolov5xu_s0",
+      "status": "skipped",
+      "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+    },
+    {
+      "model": "YOLO11x",
+      "run": "yolo11x_s0",
+      "status": "skipped",
+      "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+    },
+    {
+      "model": "RT-DETR-X",
+      "run": "rtdetr-x_s0",
+      "status": "skipped",
+      "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+    },
+    {
+      "model": "YOLOv8x",
+      "run": "yolov8x_none_s0",
+      "status": "skipped",
+      "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+    },
+    {
+      "model": "YOLOv8x-CBAM",
+      "run": "yolov8x_cbam_s0",
+      "status": "skipped",
+      "reason": "no CUDA GPU available; a 32-epoch x-scale detector run (about 26 h each, extrapolated from the measured CPU smoke test: 1.5 s per iteration at 320 px, batch 2 -> x32 work at 640 px, batch 16, 61 iterations x 32 epochs) is not feasible on CPU"
+    }
+  ],
+  "split": "splits/scene_split (test)",
+  "_meta": {
+    "script": "c11_train_sota.py",
+    "created": "2026-11-03T18:12:17",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

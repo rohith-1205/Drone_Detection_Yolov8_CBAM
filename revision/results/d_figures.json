@@ -1,0 +1,41 @@
+{
+  "fig2": {
+    "source": "drone_dataset/train/labels/*.txt",
+    "n_boxes": 1117,
+    "train_boxes_small_medium_large_at_640": [
+      13,
+      53,
+      1051
+    ]
+  },
+  "fig4": [
+    {
+      "label": "YOLOv8x baseline (M1)",
+      "source": "/home/user/Drone_Detection_Yolov8_CBAM/revision/evidence/baseline_2023_run/results.csv",
+      "epochs": 32
+    }
+  ],
+  "fig5a": {
+    "TP": 320,
+    "FP": 48,
+    "FN": 49,
+    "source": "evidence/baseline_2023_run/confusion_matrix.png (Ultralytics 8.0.141 output)"
+  },
+  "fig5b": {
+    "status": "skipped",
+    "reason": "CBAM checkpoint not found at /home/user/weights/drone_cbam_best.pt"
+  },
+  "fig6": {
+    "status": "skipped",
+    "reason": "CBAM checkpoint not found at /home/user/weights/drone_cbam_best.pt"
+  },
+  "_meta": {
+    "script": "d_make_figures.py",
+    "created": "2026-11-03T18:11:25",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}
