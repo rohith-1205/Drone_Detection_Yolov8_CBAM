@@ -1,0 +1,186 @@
+{
+  "input": "1x3x640x640",
+  "layer_12_output_CxHxW": "640x40x40",
+  "layer_15_output_CxHxW": "320x80x80",
+  "paper_claims": {
+    "layer_12": "512x40x40",
+    "layer_15": "256x80x80"
+  },
+  "detect_head_inputs_from_layers": [
+    15,
+    18,
+    21
+  ],
+  "all_layers": [
+    {
+      "layer": 0,
+      "module": "Conv",
+      "inner": "Conv",
+      "from": "-1",
+      "output_shape": "80x320x320"
+    },
+    {
+      "layer": 1,
+      "module": "Conv",
+      "inner": "Conv",
+      "from": "-1",
+      "output_shape": "160x160x160"
+    },
+    {
+      "layer": 2,
+      "module": "C2f",
+      "inner": "C2f",
+      "from": "-1",
+      "output_shape": "160x160x160"
+    },
+    {
+      "layer": 3,
+      "module": "Conv",
+      "inner": "Conv",
+      "from": "-1",
+      "output_shape": "320x80x80"
+    },
+    {
+      "layer": 4,
+      "module": "C2f",
+      "inner": "C2f",
+      "from": "-1",
+      "output_shape": "320x80x80"
+    },
+    {
+      "layer": 5,
+      "module": "Conv",
+      "inner": "Conv",
+      "from": "-1",
+      "output_shape": "640x40x40"
+    },
+    {
+      "layer": 6,
+      "module": "C2f",
+      "inner": "C2f",
+      "from": "-1",
+      "output_shape": "640x40x40"
+    },
+    {
+      "layer": 7,
+      "module": "Conv",
+      "inner": "Conv",
+      "from": "-1",
+      "output_shape": "640x20x20"
+    },
+    {
+      "layer": 8,
+      "module": "C2f",
+      "inner": "C2f",
+      "from": "-1",
+      "output_shape": "640x20x20"
+    },
+    {
+      "layer": 9,
+      "module": "SPPF",
+      "inner": "SPPF",
+      "from": "-1",
+      "output_shape": "640x20x20"
+    },
+    {
+      "layer": 10,
+      "module": "Upsample",
+      "inner": "Upsample",
+      "from": "-1",
+      "output_shape": "640x40x40"
+    },
+    {
+      "layer": 11,
+      "module": "Concat",
+      "inner": "Concat",
+      "from": "[-1, 6]",
+      "output_shape": "1280x40x40"
+    },
+    {
+      "layer": 12,
+      "module": "AttentionLayerWrapper",
+      "inner": "C2f",
+      "from": "-1",
+      "output_shape": "640x40x40"
+    },
+    {
+      "layer": 13,
+      "module": "Upsample",
+      "inner": "Upsample",
+      "from": "-1",
+      "output_shape": "640x80x80"
+    },
+    {
+      "layer": 14,
+      "module": "Concat",
+      "inner": "Concat",
+      "from": "[-1, 4]",
+      "output_shape": "960x80x80"
+    },
+    {
+      "layer": 15,
+      "module": "AttentionLayerWrapper",
+      "inner": "C2f",
+      "from": "-1",
+      "output_shape": "320x80x80"
+    },
+    {
+      "layer": 16,
+      "module": "Conv",
+      "inner": "Conv",
+      "from": "-1",
+      "output_shape": "320x40x40"
+    },
+    {
+      "layer": 17,
+      "module": "Concat",
+      "inner": "Concat",
+      "from": "[-1, 12]",
+      "output_shape": "960x40x40"
+    },
+    {
+      "layer": 18,
+      "module": "C2f",
+      "inner": "C2f",
+      "from": "-1",
+      "output_shape": "640x40x40"
+    },
+    {
+      "layer": 19,
+      "module": "Conv",
+      "inner": "Conv",
+      "from": "-1",
+      "output_shape": "640x20x20"
+    },
+    {
+      "layer": 20,
+      "module": "Concat",
+      "inner": "Concat",
+      "from": "[-1, 9]",
+      "output_shape": "1280x20x20"
+    },
+    {
+      "layer": 21,
+      "module": "C2f",
+      "inner": "C2f",
+      "from": "-1",
+      "output_shape": "640x20x20"
+    },
+    {
+      "layer": 22,
+      "module": "Detect",
+      "inner": "Detect",
+      "from": "[15, 18, 21]",
+      "output_shape": "5x8400"
+    }
+  ],
+  "_meta": {
+    "script": "a2_tensor_shapes.py",
+    "created": "2026-11-03T17:37:56",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

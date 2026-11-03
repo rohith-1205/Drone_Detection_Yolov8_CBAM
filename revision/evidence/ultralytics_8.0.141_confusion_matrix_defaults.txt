@@ -1,0 +1,11 @@
+# Extracted from ultralytics==8.0.141 wheel (pip download), for provenance
+## ultralytics/utils/metrics.py
+189:    def __init__(self, nc, conf=0.25, iou_thres=0.45, task='detect'):
+190-        """Initialize attributes for the YOLO model."""
+191-        self.task = task
+192-        self.matrix = np.zeros((nc + 1, nc + 1)) if self.task == 'detect' else np.zeros((nc, nc))
+193-        self.nc = nc  # number of classes
+194-        self.conf = conf
+195-        self.iou_thres = iou_thres
+## ultralytics/models/yolo/detect/val.py
+53:        self.confusion_matrix = ConfusionMatrix(nc=self.nc)

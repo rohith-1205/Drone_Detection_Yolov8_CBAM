@@ -1,0 +1,19 @@
+\begin{table}[!t]
+\centering
+\caption{Near-duplicate audit of the original split (pHash, Hamming $\leq4$ / $\leq10$ bits) and the new
+scene-grouped split used for all retraining.}
+\label{tab:split}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccc}
+\toprule
+\multicolumn{4}{l}{\textit{Original split (1,012 train / 347 val)}} \\
+Val images with near-duplicate in train & \multicolumn{3}{c}{33 (9.5\%)} \\
+Val images with same-scene match in train & \multicolumn{3}{c}{48 (13.8\%)} \\
+\midrule
+\textit{Scene-grouped split} & Train & Val & Test \\
+Images & 975 & 197 & 187 \\
+Boxes & 1042 & 235 & 209 \\
+Cross-split pairs $\leq10$ bits & \multicolumn{3}{c}{0} \\
+\bottomrule
+\end{tabular}
+\end{table}

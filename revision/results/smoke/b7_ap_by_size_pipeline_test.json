@@ -1,0 +1,58 @@
+{
+  "val_boxes_per_bucket_at_640": {
+    "small": 25,
+    "medium": 42,
+    "large": 302
+  },
+  "val_boxes_percent": {
+    "small": 6.775067750677507,
+    "medium": 11.382113821138212,
+    "large": 81.84281842818429
+  },
+  "thresholds_px2": {
+    "small_lt": 1024,
+    "large_ge": 9216
+  },
+  "models": {
+    "baseline": {
+      "weights": "revision/results/c_train_runs/yolov8x_cbam_s0/weights/best.pt",
+      "AP": 0.28363778666182166,
+      "AP50": 0.6034775378651106,
+      "AP75": 0.21424664992243453,
+      "AP_small": 0.004135170942596281,
+      "AP_medium": 0.026162946343837607,
+      "AP_large": 0.3407257575625009,
+      "AR1": 0.3476964769647697,
+      "AR10": 0.4888888888888888,
+      "AR100": 0.5474254742547425,
+      "AR_small": 0.08800000000000001,
+      "AR_medium": 0.28809523809523807,
+      "AR_large": 0.621523178807947
+    },
+    "cbam": {
+      "weights": "revision/results/c_train_runs/yolov8x_cbam_s0/weights/best.pt",
+      "AP": 0.28363778666182166,
+      "AP50": 0.6034775378651106,
+      "AP75": 0.21424664992243453,
+      "AP_small": 0.004135170942596281,
+      "AP_medium": 0.026162946343837607,
+      "AP_large": 0.3407257575625009,
+      "AR1": 0.3476964769647697,
+      "AR10": 0.4888888888888888,
+      "AR100": 0.5474254742547425,
+      "AR_small": 0.08800000000000001,
+      "AR_medium": 0.28809523809523807,
+      "AR_large": 0.621523178807947
+    }
+  },
+  "note": "AP/AR = -1 means there are no ground-truth boxes in that bucket (pycocotools convention).",
+  "_meta": {
+    "script": "b7_ap_by_size.py",
+    "created": "2026-11-03T18:07:05",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

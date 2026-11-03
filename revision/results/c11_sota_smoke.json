@@ -1,0 +1,28 @@
+{
+  "rows": [
+    {
+      "model": "YOLOv8x-CBAM",
+      "run": "yolov8x_cbam_s0",
+      "status": "done",
+      "precision": 0.7535781248218832,
+      "recall": 0.5933014354066986,
+      "mAP50": 0.6497987111157582,
+      "mAP50_95": 0.3346475986840903,
+      "params": 68217769,
+      "GFLOPs": 258.1141312,
+      "FPS": 1.3069625717755704,
+      "latency_ms": 765.1328520000789,
+      "device": "CPU"
+    }
+  ],
+  "split": "splits/scene_split (test)",
+  "_meta": {
+    "script": "c11_train_sota.py",
+    "created": "2026-11-03T17:51:44",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

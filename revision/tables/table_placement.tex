@@ -1,0 +1,18 @@
+\begin{table}[!t]
+\centering
+\caption{Placement and attention-type ablation on the test split (seed 0). Added parameters are measured. Cells marked ``--'' require trained checkpoints / a GPU and were not run in this revision.}
+\label{tab:placement}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccc}
+\toprule
+Configuration & Added params & mAP@0.5 & mAP@0.5:0.95 \\
+\midrule
+None (baseline) & 0 & -- & -- \\
+CBAM @ L12 & -- & -- & -- \\
+CBAM @ L15 & -- & -- & -- \\
+CBAM @ L12+L15 & +64,198 & -- & -- \\
+SE @ L12+L15 & +65,022 & -- & -- \\
+CoordAtt @ L12+L15 & +50,012 & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table}

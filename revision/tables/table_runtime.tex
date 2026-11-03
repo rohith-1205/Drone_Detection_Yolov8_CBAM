@@ -1,0 +1,18 @@
+\begin{table}[!t]
+\centering
+\caption{Measured complexity and runtime (batch 1, $640\times640$, network forward only, Conv+BN fused, median of
+interleaved runs).}
+\label{tab:runtime}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llcccc}
+\toprule
+Model & Device & Prec. & ms/img & FPS & Peak mem (MB) \\
+\midrule
+Baseline & CPU, 4 thr. & FP32 & 604.59 & 1.65 & n/a \\
+CBAM & CPU, 4 thr. & FP32 & 606.91 & 1.65 & n/a \\
+\midrule
+\multicolumn{6}{l}{Params added by CBAM: +64,198 (+0.094\%)} \\
+\multicolumn{6}{l}{GFLOPs added by CBAM: +0.0018 (+0.0007\%)} \\
+\bottomrule
+\end{tabular}
+\end{table}

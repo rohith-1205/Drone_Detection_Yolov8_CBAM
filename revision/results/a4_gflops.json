@@ -1,0 +1,73 @@
+{
+  "convention": "GFLOPs = 2 * MACs / 1e9 (Ultralytics convention); thop ignores element-wise ops",
+  "input": "1x3x640x640",
+  "variants": {
+    "none": {
+      "thop_MACs": 129056153600,
+      "GFLOPs_ultralytics_convention": 258.1123072,
+      "added_GFLOPs_vs_baseline": 0.0,
+      "added_percent_vs_baseline": 0.0,
+      "elementwise_ops_not_in_thop": 0,
+      "GFLOPs_including_elementwise": 258.1123072,
+      "fvcore_MACs": 128878105600
+    },
+    "channel": {
+      "thop_MACs": 129056281600,
+      "GFLOPs_ultralytics_convention": 258.1125632,
+      "added_GFLOPs_vs_baseline": 0.000256,
+      "added_percent_vs_baseline": 9.918163251380212e-05,
+      "elementwise_ops_not_in_thop": 18432000,
+      "GFLOPs_including_elementwise": 258.1309952
+    },
+    "spatial": {
+      "thop_MACs": 129056937600,
+      "GFLOPs_ultralytics_convention": 258.1138752,
+      "added_GFLOPs_vs_baseline": 0.001568,
+      "added_percent_vs_baseline": 0.0006074874991470379,
+      "elementwise_ops_not_in_thop": 18432000,
+      "GFLOPs_including_elementwise": 258.1323072
+    },
+    "cbam": {
+      "thop_MACs": 129057065600,
+      "GFLOPs_ultralytics_convention": 258.1141312,
+      "added_GFLOPs_vs_baseline": 0.001824,
+      "added_percent_vs_baseline": 0.00070666913166084,
+      "elementwise_ops_not_in_thop": 27648000,
+      "GFLOPs_including_elementwise": 258.1417792,
+      "fvcore_MACs": 128879017600
+    },
+    "se": {
+      "thop_MACs": 129056217600,
+      "GFLOPs_ultralytics_convention": 258.1124352,
+      "added_GFLOPs_vs_baseline": 0.000128,
+      "added_percent_vs_baseline": 4.959081625690106e-05,
+      "elementwise_ops_not_in_thop": 9216000,
+      "GFLOPs_including_elementwise": 258.1216512
+    },
+    "coord": {
+      "thop_MACs": 129059238400,
+      "GFLOPs_ultralytics_convention": 258.1184768,
+      "added_GFLOPs_vs_baseline": 0.0061696,
+      "added_percent_vs_baseline": 0.002390277343582631,
+      "elementwise_ops_not_in_thop": 9216000,
+      "GFLOPs_including_elementwise": 258.1276928
+    }
+  },
+  "ultralytics_get_flops_baseline": 258.1123072,
+  "ultralytics_get_flops_cbam": 258.2162752,
+  "ultralytics_get_flops_note": "Ultralytics get_flops()/model.info() profiles a small stride-sized image (e.g. 32x32) and multiplies by (640/32)^2 = 400. The CBAM channel MLP works on 1x1 pooled vectors, so its cost does NOT grow with image size; the x400 extrapolation therefore over-counts it (~+0.1 GFLOPs). The direct 640x640 thop/fvcore numbers above are the correct ones. This is the likely origin of the paper's '258.5 -> 258.6'.",
+  "paper_claims": {
+    "baseline": 258.5,
+    "cbam": 258.6,
+    "increase_percent": 0.0387
+  },
+  "_meta": {
+    "script": "a4_gflops.py",
+    "created": "2026-11-03T17:39:24",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

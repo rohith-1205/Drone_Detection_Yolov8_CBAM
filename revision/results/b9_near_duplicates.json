@@ -1,0 +1,51 @@
+{
+  "n_train": 1012,
+  "n_val": 347,
+  "thresholds": {
+    "near_duplicate": 4,
+    "same_scene": 10
+  },
+  "cross_split_pairs_near_duplicate": 33,
+  "cross_split_pairs_same_scene": 57,
+  "val_images_with_near_duplicate_in_train": 33,
+  "val_images_with_same_scene_in_train": 48,
+  "val_nearest_train_distance_histogram": {
+    "0": 30,
+    "2": 1,
+    "4": 2,
+    "6": 4,
+    "8": 4,
+    "10": 7,
+    "12": 16,
+    "14": 34,
+    "16": 65,
+    "18": 96,
+    "20": 78,
+    "22": 10
+  },
+  "images_per_source_and_split": {
+    "train/pic": 852,
+    "train/scene": 71,
+    "train/yoto": 89,
+    "valid/foto": 133,
+    "valid/numeric": 186,
+    "valid/pic": 28
+  },
+  "sources_in_both_splits": [
+    "pic"
+  ],
+  "within_train_pairs_near_duplicate": 23,
+  "within_train_pairs_same_scene": 215,
+  "within_valid_pairs_near_duplicate": 38,
+  "within_valid_pairs_same_scene": 103,
+  "example_sheet": "revision/figures/b9_duplicate_examples.jpg",
+  "_meta": {
+    "script": "b9_near_duplicates.py",
+    "created": "2026-11-03T17:42:25",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}

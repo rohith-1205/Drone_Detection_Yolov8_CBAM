@@ -1,0 +1,25 @@
+\begin{table}[!t]
+\centering
+\caption{Principal feature stages of YOLOv8x for a $640\times640$ input (measured by a tensor-shape trace).}
+\label{tab:stages}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{clccl}
+\toprule
+Layer & Module & Channels & Resolution & Role \\
+\midrule
+0 & Conv ($k{=}3,s{=}2$) & 80 & $320\times320$ & Low-level stem \\
+1 & Conv ($k{=}3,s{=}2$) & 160 & $160\times160$ & Downsampling \\
+2 & C2f ($n{=}3$) & 160 & $160\times160$ & Feature extraction \\
+3 & Conv ($k{=}3,s{=}2$) & 320 & $80\times80$ & Downsampling \\
+4 & C2f ($n{=}6$) & 320 & $80\times80$ & P3 multi-scale feature \\
+5 & Conv ($k{=}3,s{=}2$) & 640 & $40\times40$ & Downsampling \\
+6 & C2f ($n{=}6$) & 640 & $40\times40$ & P4 multi-scale feature \\
+7 & Conv ($k{=}3,s{=}2$) & 640 & $20\times20$ & Downsampling \\
+8 & C2f ($n{=}3$) & 640 & $20\times20$ & Deep context extraction \\
+9 & SPPF ($k{=}5$) & 640 & $20\times20$ & P5 multi-scale feature \\
+12 & C2f & 640 & $40\times40$ & Neck fusion / CBAM-1 \\
+15 & C2f & 320 & $80\times80$ & Neck fusion / CBAM-2 \\
+22 & Detect head & Multi & Multi & Decoupled detection \\
+\bottomrule
+\end{tabular}
+\end{table}
