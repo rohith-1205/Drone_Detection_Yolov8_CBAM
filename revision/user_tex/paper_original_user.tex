@@ -1,0 +1,371 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{url}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125em X}}
+
+\begin{document}
+
+\title{An Attention-Guided Neck Feature Fusion Framework for Drone Detection Using YOLOv8 and CBAM}
+
+\author{
+\IEEEauthorblockN{Rohith S, Krithik JY, Avantika R, Thilak Sujan KS, Karthika R\textsuperscript{*}}
+\IEEEauthorblockA{\textit{Department of Electronics and Communication Engineering} \\
+\textit{Amrita School of Engineering, Coimbatore}\\
+\textit{Amrita Vishwa Vidyapeetham, India}\\
+\textsuperscript{*}Corresponding author:\\
+r\_karthika@cb.amrita.edu}
+}
+
+\maketitle
+
+% ---------------------------------------------------------------- ABSTRACT
+\begin{abstract}
+Small unmanned aerial vehicles (UAVs) can be challenging to detect in high-resolution outdoor images, particularly when they appear at a distance and occupy only a small portion of the frame. Their appearance can also be easily confused with birds, vegetation, clouds, buildings, and other background elements. To address this challenge, this paper proposes an attention-guided enhancement of the You Only Look Once (YOLO) detector YOLOv8x by incorporating the Convolutional Block Attention Module (CBAM) at two selected feature-fusion stages in the path aggregation neck. Specifically, channel attention followed by spatial attention is introduced after the $40\times40$ and $80\times80$ feature-fusion stages. This allows the network to refine the multi-scale features before they are passed to the detection head. Rather than changing the YOLOv8x backbone hierarchy, the proposed approach adds two neck-level attention modules. On the supplied validation split, the model reaches 92.93\% mAP@0.5 and 57.10\% mAP@0.5:0.95, gains of 3.71 and 3.34 percentage points over the baseline. The reported increase is approximately 0.064M parameters and 0.1 GFLOPs after rounding. Furthermore, the ablation study shows complementary contributions from channel and spatial attention. The results are limited to the supplied validation split and do not establish small-object-specific gains or generalization to independent datasets.
+\end{abstract}
+
+\begin{IEEEkeywords}
+drone detection, UAV detection, YOLOv8, CBAM, attention mechanism, object detection, feature fusion
+\end{IEEEkeywords}
+
+% ---------------------------------------------------------------- I. INTRODUCTION
+\section{Introduction}
+
+% ---- Fig. 1 (pipeline)
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{figure1.png}
+\caption{End-to-end pipeline of the proposed YOLOv8-CBAM drone detection framework.}
+\label{fig:pipeline}
+\end{figure*}
+
+Unmanned aerial vehicles (UAVs), or drones, are now used well beyond military settings, in tasks such as infrastructure inspection, precision agriculture, package delivery, mapping, disaster response, and surveillance. Their low cost and agility, however, also raise security concerns, including intrusion into restricted airspace, smuggling, covert surveillance, and collision risks near airports. This growth is part of a wider rise of small autonomous robots, which now extends even to bioinspired microrobots for medical use [1].
+
+Spotting low-flying drones in cluttered outdoor scenes is still difficult. Seen from a ground camera, a drone may cover only $16\times16$ to $32\times32$ pixels of a high-definition frame, so fine details such as propellers, motor mounts, and the airframe are largely lost after downsampling. Its appearance also changes with viewing angle, lighting, motion blur, and partial occlusion by trees, poles, or buildings, while clouds, birds, and moving foliage can produce drone-like patterns that cause false alarms or missed targets.
+
+Preserving information across scales is therefore essential. Feature Pyramid Networks (FPN) [2] and Path Aggregation Networks (PANet) [3] merge features from different resolutions, but this fusion can also carry background noise into the feature maps and blur the edges of small objects. Attention mechanisms address this by weighting features according to their channel and spatial importance, and the Convolutional Block Attention Module (CBAM) [4] does so by applying channel attention followed by spatial attention.
+
+In this work, two CBAM modules are added to the path aggregation neck of the You Only Look Once (YOLO) detector YOLOv8x, after the $40\times40$ fusion stage at Layer 12 and the $80\times80$ fusion stage at Layer 15. These are the points where features from different scales meet, so refining them here helps suppress background clutter and keep the visual cues of small drones before detection.
+
+The main contributions of this work are as follows:
+\begin{itemize}
+\item We evaluate YOLOv8-CBAM, an attention-guided architecture intended to refine multi-scale features in visually complex outdoor environments; the available experiments do not isolate small-object-specific performance.
+\item We introduce a targeted neck-level attention strategy by placing two CBAM modules after Layers 12 and 15. This allows us to enhance the fused feature representations while keeping the original YOLOv8x backbone unchanged.
+\item We conduct an ablation study by comparing the baseline YOLOv8x with channel-only attention, spatial-only attention, and the complete CBAM configuration. This helps demonstrate the individual and combined contributions of the two attention mechanisms.
+\item On the supplied train/validation split, the proposed framework improves mAP@0.5 and mAP@0.5:0.95 by 3.71 and 3.34 percentage points, respectively. The reported model-size increase is approximately 0.064M parameters; the GFLOPs increase is approximately 0.1 after rounding.
+\end{itemize}
+
+
+% ---------------------------------------------------------------- II. RELATED WORK
+\section{Related Work}
+
+\subsection{Deep Learning Object Detection}
+
+Object detectors built on deep learning are usually grouped into two-stage and single-stage designs. Two-stage methods such as Faster Region-based Convolutional Neural Network (R-CNN) [5] first propose candidate regions and then classify and refine them, which gives good accuracy but slows down inference. Single-stage methods such as the Single Shot MultiBox Detector (SSD) [6] and the YOLO family predict classes and boxes in a single pass, which makes them better suited to real-time use. YOLOv4 [7] brought in a Cross Stage Partial Network (CSPNet) backbone, PANet feature routing, and mosaic augmentation, while YOLOv7 [8] improved efficiency through extended efficient layer aggregation. YOLOv8 [9] then added the C2f (Cross Stage Partial with two convolutions) block for better gradient flow and feature reuse, together with an anchor-free decoupled head, making it a practical base for small-object tasks such as UAV detection.
+
+\subsection{Multi-Scale Representation and Attention}
+
+Small objects are hard to detect because deeper layers gain semantic information at the cost of spatial resolution. FPN [2] handles this with a top-down path and lateral connections that merge features across scales, and PANet [3] adds a bottom-up path so that low-level spatial detail reaches the deeper layers more easily. Improved YOLOv5 variants have applied similar ideas to general object detection [10] and to finding small defects on cluttered printed circuit boards [11].
+
+Attention modules take a different route by weighting features according to how useful they are. Squeeze-and-Excitation (SE) networks [12] learn channel weights from globally pooled features, while CBAM [4] adds a spatial branch so that the network learns both which channels and which locations matter. Coordinate Attention [13] builds position information into channel attention by pooling along each spatial direction, and CBAM\_SAUNet [14] showed that combining channel and spatial attention helps with difficult corner cases in segmentation.
+
+% ---------------------------------------------------------------- III. DATASET
+\section{Dataset and Problem Formulation}
+
+\subsection{Dataset Attributes and Annotation}
+
+This study uses the publicly available YOLO Drone Detection Dataset from Kaggle [15], which contains 1,359 images of a single class, drone, captured against clear and overcast skies, urban skylines, and dense vegetation. The images are split into 1,012 for training (74.5\%) and 347 for validation (25.5\%). No independent test split or sequence/duplicate-image audit is reported, so source-level split independence cannot be confirmed. Each drone is labeled with a normalized bounding box:
+\begin{equation}
+\mathbf{b} = (x_c,\, y_c,\, w,\, h)
+\end{equation}
+where $(x_c, y_c)$ is the box center and $w$ and $h$ are its width and height. All images are letterbox-resized to $640\times640$ pixels so that their aspect ratio is preserved.
+
+As Fig.~\ref{fig:labels} shows, the training split holds 1,117 drone instances, slightly more than one per image. Box centers cluster near the middle of the frame, while box sizes vary widely, from a small group below 0.2 of the frame width and height to many instances that cover more than half the frame width. This spread of scales motivates attention-refined fusion at both the $40\times40$ and $80\times80$ neck stages.
+
+% ---- Label statistics figure
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.78\columnwidth]{figure_labels.png}
+\caption{Statistics of the training annotations: (a) number of drone instances, (b) overlaid bounding-box shapes, (c) distribution of normalized box centers, and (d) joint distribution of normalized box width and height.}
+\label{fig:labels}
+\end{figure}
+
+\subsection{Formal Detection Objective}
+
+The detector is trained by minimizing a combined loss function:
+\begin{equation}
+L_{total} = \lambda_{box}L_{CIoU} + \lambda_{cls}L_{BCE} + \lambda_{dfl}L_{DFL}
+\end{equation}
+Here, Complete Intersection over Union (CIoU) loss is used for bounding-box localization, Binary Cross-Entropy (BCE) loss handles classification, and Distribution Focal Loss (DFL) helps improve the localization of small targets.
+
+% ---------------------------------------------------------------- IV. PROPOSED FRAMEWORK
+\section{Proposed YOLOv8-CBAM Framework}
+
+\subsection{Overall Architectural Pipeline}
+
+As shown in Fig.~\ref{fig:pipeline}, YOLOv8-CBAM keeps the standard YOLOv8x backbone and decoupled anchor-free detection head, and changes only the path aggregation neck. Two CBAM modules are placed after Layer 12 and Layer 15, where the $40\times40$ and $80\times80$ features are fused, so that the combined features are refined before they pass through the bottom-up pathway to the detection head and non-maximum suppression.
+
+
+% ---- Fig. 2 (CBAM workflow)
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.44\columnwidth]{figure2.png}
+\caption{CBAM sequential channel-then-spatial attention workflow.}
+\label{fig:cbam}
+\end{figure}
+
+\subsection{Backbone and Multi-Scale Feature Hierarchy}
+
+YOLOv8x is used as the base network in the proposed framework. Its backbone is built using modified CSPNet blocks called C2f, which help combine high-level semantic features with efficient gradient flow. As the input passes through the backbone, it is progressively downsampled by factors of 8, 16, and 32, producing three feature pyramid stages:
+\begin{itemize}
+\item P3 ($80\times80$, 320 channels): Provides high-resolution features with fine spatial details, making it particularly useful for detecting small UAVs.
+\item P4 ($40\times40$, 640 channels): Provides medium-resolution features that balance spatial information with semantic context.
+\item P5 ($20\times20$, 640 channels): Provides lower-resolution, deeper features with wider receptive fields through the Spatial Pyramid Pooling-Fast (SPPF) module, allowing the network to capture broader contextual information.
+\end{itemize}
+These three feature levels form the multi-scale representation used by the neck for subsequent feature fusion.
+
+% ---- Table I
+\begin{table*}[!t]
+\caption{Selected Backbone and Neck Feature Stages of YOLOv8x}
+\label{tab:stages}
+\centering
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|c|l|c|c|l|}
+\hline
+\textbf{Layer Index} & \textbf{Module Type} & \textbf{Channels} & \textbf{Resolution} & \textbf{Operational Role} \\
+\hline
+0  & Conv2d ($k=3$, $s=2$) & 80  & $320\times320$ & Low-level stem \\
+1  & Conv2d ($k=3$, $s=2$) & 160 & $160\times160$ & Downsampling \\
+2  & C2f ($n=3$)           & 160 & $160\times160$ & Feature extraction \\
+3  & Conv2d ($k=3$, $s=2$) & 320 & $80\times80$   & Downsampling \\
+4  & C2f ($n=6$)           & 320 & $80\times80$   & P3 multi-scale feature \\
+5  & Conv2d ($k=3$, $s=2$) & 640 & $40\times40$   & Downsampling \\
+6  & C2f ($n=6$)           & 640 & $40\times40$   & P4 multi-scale feature \\
+7  & Conv2d ($k=3$, $s=2$) & 640 & $20\times20$   & Downsampling \\
+8  & C2f ($n=3$)           & 640 & $20\times20$   & Deep context extraction \\
+9  & SPPF ($k=5$)          & 640 & $20\times20$   & P5 multi-scale feature \\
+12 & C2f                   & 640 & $40\times40$   & Neck fusion / CBAM-1 \\
+15 & C2f                   & 320 & $80\times80$   & Neck fusion / CBAM-2 \\
+22 & Detect Head           & Multi & Multi        & Decoupled detection \\
+\hline
+\end{tabular}
+\end{table*}
+
+\subsection{CBAM Formulation}
+
+The internal operation of the CBAM module is illustrated in Fig.~\ref{fig:cbam}. For an intermediate feature tensor $F\in\mathbb{R}^{C\times H\times W}$, CBAM applies two attention mechanisms sequentially: channel attention followed by spatial attention. The channel attention map $M_c\in\mathbb{R}^{C\times1\times1}$ is obtained by applying average and max pooling across the spatial dimensions. These pooled features are passed through a shared multilayer perceptron (MLP) with a reduction ratio of $r=16$, and the results are combined and passed through a sigmoid function:
+\begin{equation}
+M_c(F) = \sigma\!\left(W_1\!\left(\delta\!\left(W_0\!\left(F^{c}_{avg}\right)\right)\right) + W_1\!\left(\delta\!\left(W_0\!\left(F^{c}_{max}\right)\right)\right)\right)
+\end{equation}
+where $W_0$ and $W_1$ represent the shared MLP weights and $\delta$ denotes the ReLU activation. The resulting channel attention is then applied to the input feature map through element-wise multiplication:
+\begin{equation}
+F' = M_c(F) \otimes F
+\end{equation}
+Next, the spatial attention module focuses on where the important information is located. It applies average and max pooling along the channel dimension, combines the resulting spatial descriptors, and processes them using a $7\times7$ convolution followed by a sigmoid function:
+\begin{equation}
+M_s(F') = \sigma\!\left(f^{7\times7}\!\left(\left[\mathrm{AvgPool}_c(F');\, \mathrm{MaxPool}_c(F')\right]\right)\right)
+\end{equation}
+Finally, the spatial attention map is applied to the refined feature map to obtain the final CBAM output:
+\begin{equation}
+F'' = M_s(F') \otimes F'
+\end{equation}
+Thus, CBAM first determines which feature channels are important and then identifies which spatial regions are important, producing a more refined feature representation.
+
+\subsection{Targeted Attention Placement}
+
+Instead of adding attention modules throughout the entire network, we selectively place two CBAM modules at important feature-fusion points in the neck:
+\begin{itemize}
+\item CBAM-1 (Layer 12): This module is placed after the C2f Layer 12 and operates on a $640\times40\times40$ feature map. At this stage, features from the upsampled P5 layer are combined with the P4 features. CBAM helps refine this combined representation by emphasizing useful semantic information and reducing background clutter.
+\item CBAM-2 (Layer 15): The second CBAM module is placed after C2f Layer 15 and operates on a $320\times80\times80$ feature map. Here, the top-down semantic information is combined with the high-resolution P3 features. Applying attention at this stage helps preserve and strengthen the spatial details of small drone targets before the features are passed to the bottom-up aggregation stage.
+\end{itemize}
+
+\subsection{Dynamic Attention Injection}
+
+The attention modules are integrated as registered child submodules using dynamic PyTorch execution hooks, without changing the original YOLOv8 layer definitions. The post-fusion hook tensors are $[B,640,40,40]$ at Layer 12 and $[B,320,80,80]$ at Layer 15, where $B$ is batch size (Table~\ref{tab:stages}). Registered parameters are exposed through the model parameter iterator and are included when the optimizer is constructed from that iterator after registration; the hook returns the refined tensors to the forward graph. Pretrained YOLOv8x weights initialize the model and are fine-tuned jointly with CBAM, not frozen. Registered child-module parameters are stored in the model state dictionary and require the same model structure when reloading. Export of this hook-based implementation was not evaluated and requires separate validation.
+
+% ---- Table II
+\begin{table}[!t]
+\caption{Hyperparameter and Training Specifications}
+\label{tab:hyper}
+\centering
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Hyperparameter} & \textbf{Experimental Setting} \\
+\hline
+Base Model Architecture   & YOLOv8x \\
+Initialization            & Pretrained Checkpoint \\
+Input Image Dimension     & $640\times640$ (Letterbox Padded) \\
+Total Training Epochs     & 32 \\
+Mini-Batch Size           & 16 \\
+Optimization Algorithm    & SGD with Momentum (0.937) \\
+Weight Decay Penalty      & 0.0005 \\
+Initial Learning Rate ($\eta_0$) & 0.01 \\
+Channel Reduction Ratio ($r$)    & 16 \\
+Spatial Convolution Kernel       & $7\times7$ \\
+Target Foreground Classes        & 1 (drone) \\
+Training Split Partition         & 1,012 Images \\
+Validation Split Partition       & 347 Images \\
+\hline
+\end{tabular}
+\end{table}
+
+% ---- Table IV
+\begin{table*}[!t]
+\caption{Ablation Study of Attention Configurations}
+\label{tab:ablation}
+\centering
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+\textbf{Configuration} & \textbf{Params} & \textbf{GFLOPs} & \textbf{P (\%)} & \textbf{R (\%)} & \textbf{mAP@0.5} & \textbf{mAP@0.5:0.95} \\
+\hline
+M1: Baseline     & 68.2M & 258.5 & 86.82 & 83.90 & 89.22\% & 53.76\% \\
+M2: Channel-Only & 68.2M & 258.5 & 88.54 & 85.12 & 90.71\% & 54.92\% \\
+M3: Spatial-Only & 68.2M & 258.5 & 89.15 & 86.40 & 91.25\% & 55.43\% \\
+M4: YOLOv8+CBAM  & 68.2M & 258.6 & 91.30 & 88.75 & 92.93\% & 57.10\% \\
+\hline
+Gain over Baseline (M4 $-$ M1) & +0.064M & $\approx$+0.1 & +4.48 pp & +4.85 pp & +3.71 pp & +3.34 pp \\
+\hline
+\multicolumn{7}{l}{\footnotesize Parameter counts are displayed to 0.1M; the difference uses unrounded counts. GFLOPs are rounded to 0.1.}\\
+\end{tabular}
+\end{table*}
+
+% ---------------------------------------------------------------- V. IMPLEMENTATION
+\section{Implementation and Training Setup}
+
+\subsection{Training Protocol and Hyperparameters}
+
+The experiments were conducted using PyTorch with automated mixed-precision support, with the YOLOv8x backbone initialized using pretrained weights. The main experimental settings are summarized in Table~\ref{tab:hyper}. All configurations used the same settings, and the best validation checkpoint was selected. Mosaic augmentation, random horizontal flipping, scale jittering, and hue-saturation-value (HSV) perturbations were applied. Only single-run results are reported; run-to-run variability was not measured.
+
+\subsection{Evaluation Metrics}
+
+The detection performance was evaluated using Precision (P), Recall (R), Average Precision (AP), mAP@0.5, and mAP@0.5:0.95. Precision measures the proportion of correctly detected objects among all predicted detections, while Recall represents the proportion of actual objects that are correctly detected. The Average Precision (AP) is calculated as the area under the precision-recall curve. The mAP@0.5 is calculated at an intersection over union (IoU) threshold of 0.5, while mAP@0.5:0.95 evaluates performance across IoU thresholds ranging from 0.5 to 0.95. Metrics use Ultralytics [9] (v8.4.66, NMS IoU 0.7). Table~\ref{tab:ablation} reports P and R at the maximum-F1 confidence threshold; Fig.~\ref{fig:cmpr}(a) uses a separate fixed confidence threshold of 0.25 and IoU 0.45 for the confusion matrix.
+
+% ---------------------------------------------------------------- VI. RESULTS
+\section{Experimental Results and Analysis}
+
+\subsection{Main Benchmark Comparison}
+
+Table~\ref{tab:ablation} compares the baseline YOLOv8x (M1) with the proposed YOLOv8-CBAM (M4), and its last row lists the gain over the baseline. The proposed model improves all four evaluated metrics, with Precision rising by 4.48 and Recall by 4.85 percentage points.
+
+The mAP gains indicate improved aggregate detection and localization on this validation split. Size-stratified metrics and a dedicated negative-image evaluation were not conducted; therefore, small-object-specific gains and background false-alarm reduction cannot be quantified.
+
+
+\subsection{Ablation Study on Attention Components}
+
+To separate the effect of each attention branch, we compare four settings: the plain baseline (M1), channel attention only (M2), spatial attention only (M3), and full CBAM (M4), with each variant applied after Layers 12 and 15. Table~\ref{tab:ablation} shows that both single branches improve on the baseline, with the spatial branch gaining a little more than the channel branch, while the full CBAM gives the best results on every metric, which shows that the two branches complement each other.
+
+\subsection{Computational Complexity Analysis}
+
+The baseline and proposed models both display as 68.2M parameters when rounded to one decimal place in millions; the additional 0.064M parameters is calculated from the unrounded counts and is therefore hidden by the table's display precision. The reported GFLOPs values are also rounded to one decimal place (258.5 and 258.6), so their difference should be read as approximately 0.1 GFLOPs, not as an unrounded measurement. No hardware-specific latency, FPS, or memory measurements were conducted; these model-size figures alone do not establish real-time performance.
+
+% ---------------------------------------------------------------- VII. VISUAL ANALYSIS
+\section{Visual and Qualitative Analysis}
+
+\subsection{Training Convergence Dynamics}
+
+Fig.~\ref{fig:results} illustrates the training convergence of the baseline YOLOv8x-CBAM over 32 epochs. The loss curves show a stable convergence pattern without clear indications of overfitting. Both precision and recall increase consistently during training, while the validation mAP@0.5 and mAP@0.5:0.95 metrics gradually stabilize during the final eight epochs.
+
+% ---- Fig. 3
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figure3.png}
+\caption{Training loss curves and validation metric trajectories of YOLOv8-CBAM (M4) across 32 training epochs.}
+\label{fig:results}
+\end{figure}
+
+% ---- Confusion matrix + PR curve (side by side)
+\begin{figure}[!t]
+\centering
+\begin{minipage}[b]{0.49\columnwidth}
+\centering
+\includegraphics[width=\linewidth]{figure4.png}\\
+{\footnotesize (a) Confusion matrix}
+\end{minipage}\hfill
+\begin{minipage}[b]{0.49\columnwidth}
+\centering
+\includegraphics[width=\linewidth]{figure5.png}\\
+{\footnotesize (b) Precision--Recall curve}
+\end{minipage}
+\caption{Validation results from different configurations: (a) confusion matrix of baseline YOLOv8x (M1), evaluated at confidence 0.25 and IoU 0.45; (b) precision--recall curve of YOLOv8-CBAM (M4). The panels represent different model configurations and operating points.}
+\label{fig:cmpr}
+\end{figure}
+
+\subsection{Confusion Matrix and PR Curves}
+
+Fig.~\ref{fig:cmpr}(a) shows the baseline (M1) confusion matrix, while Fig.~\ref{fig:cmpr}(b) shows the proposed model (M4) PR curve; they represent different configurations. The matrix uses confidence 0.25 and IoU 0.45, whereas Table~\ref{tab:ablation} reports precision and recall at maximum-F1 confidence. The displayed M1 matrix contains 320 true positives, 48 false positives, and 49 false negatives, corresponding to 86.96\% precision and 86.72\% recall at the matrix operating point. These values are not expected to equal the M1 table values (86.82\% and 83.90\%) because the confidence operating points differ. The M4 PR curve reports mAP@0.5 of 0.929. No negative-only split was evaluated.
+
+% ---- Detection results (side by side, full width)
+\begin{figure*}[!t]
+\centering
+\begin{minipage}[b]{0.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figure6.png}\\
+{\footnotesize (a) Close-range quadcopter against a clear sky}
+\end{minipage}\hfill
+\begin{minipage}[b]{0.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figure7.png}\\
+{\footnotesize (b) Multirotor drone above a tree line in a ground-level scene}
+\end{minipage}
+\caption{Detection results of YOLOv8-CBAM: (a) a close-range quadcopter against a clear sky with blurred foliage in the background, and (b) a multirotor drone hovering above a tree line with people and equipment in the foreground. The overlay shows the track ID, class label, and confidence score; the track ID is from the Ultralytics tracker, used only for visualization.}
+\label{fig:detect}
+\end{figure*}
+
+
+\subsection{Qualitative Detection Performance}
+
+Fig.~\ref{fig:detect}(a) shows a representative detection produced by YOLOv8-CBAM for a close-range quadcopter captured against a clear sky, with out-of-focus palm foliage in the background. The model detects the drone with a confidence score of 0.79. No additional detection is visible on the textured vegetation in this example; this single image is not a quantitative background-rejection test. The predicted bounding box covers the main airframe and all four rotors, but it excludes part of the lower gimbal camera and the landing skids. This shows that, for large near-field targets, the box boundaries can still be imprecise even when the detection itself is correct, which is consistent with the gap between the mAP@0.5 and mAP@0.5:0.95 scores reported in Table~\ref{tab:ablation}.
+
+
+
+\subsection{Detection in Cluttered Ground-Level Scenes}
+
+Fig.~\ref{fig:detect}(b) shows a multirotor drone above a tree line, with people and equipment in the foreground. The model localizes the drone (confidence 0.62); no additional detections are visible in this example, which does not quantify false-positive performance. The lower confidence than Fig.~\ref{fig:detect}(a) accompanies the smaller apparent target and less distinctive thin structures.
+
+Observed failure conditions include severe motion blur, extreme distances where the drone occupies fewer than $8\times8$ pixels, and heavy occlusion behind buildings. Temporal multi-frame modeling may help address these cases.
+
+% ---------------------------------------------------------------- VIII. DISCUSSION
+\section{Discussion}
+
+The results are consistent with the motivation for refining multi-scale features at the neck fusion points, where concatenated features may carry background information into higher-resolution maps. In the tested configuration, the spatial-only variant scores slightly higher than the channel-only variant, while the combined CBAM variant obtains the highest reported validation scores. Because both attention branches were inserted at Layers 12 and 15 together, the current ablation does not isolate the contribution of either insertion point.
+
+The evaluation is limited to one dataset and its supplied validation split. An independent test set, source-sequence and duplicate-image audit, size-stratified AP/recall, bird-like distractor and negative-image evaluation, quantitative comparison with drone-specific detectors, single-location and alternative-placement ablations, comparison with another attention module, repeated-run statistics, and hardware profiling (latency, throughput, and memory) were not available for this study and remain necessary. The dataset split's independence therefore cannot be verified, and the reported gains should be interpreted as single-run validation results rather than evidence of generalization or deployment readiness.
+
+% ---------------------------------------------------------------- IX. CONCLUSION
+\section{Conclusion}
+
+This paper evaluated YOLOv8-CBAM, which applies channel and spatial attention after the $40\times40$ and $80\times80$ neck fusion stages. Pretrained weights initialize the model and are fine-tuned jointly with CBAM. On the supplied validation split, it reaches 92.93\% mAP@0.5 and 57.10\% mAP@0.5:0.95, gains of 3.71 and 3.34 percentage points, with approximately 0.064M additional parameters and a rounded 0.1-GFLOP increase. These single-split results do not establish independent generalization, small-object-specific gains, superiority, or real-time performance.
+
+% ---------------------------------------------------------------- REFERENCES
+% NOTE: in-text citations are hard-coded as [n] to match the numbering used in the Word file.
+\footnotesize
+\begin{thebibliography}{00}
+\bibitem{b1} K. Rajagopal, M. Thangamuthu, S. R. R. Karur, R. R. Karur, M. P. Giridharan, and D. Dommadi, ``Exploring bioinspired microrobotics for future medical frontiers: A comprehensive review,'' \textit{Concurrent Engineering}, vol. 33, no. 1--4, pp. 257--284, 2025.
+\bibitem{b2} T.-Y. Lin, P. Doll\'ar, R. Girshick, K. He, B. Hariharan, and S. Belongie, ``Feature pyramid networks for object detection,'' in \textit{Proc. IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2017, pp. 2117--2125.
+\bibitem{b3} S. Liu, L. Qi, H. Qin, J. Shi, and J. Jia, ``Path aggregation network for instance segmentation,'' in \textit{Proc. IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2018, pp. 8759--8768.
+\bibitem{b4} S. Woo, J. Park, J.-Y. Lee, and I. S. Kweon, ``CBAM: Convolutional block attention module,'' in \textit{Proc. European Conference on Computer Vision (ECCV)}, 2018, pp. 3--19.
+\bibitem{b5} S. Ren, K. He, R. Girshick, and J. Sun, ``Faster R-CNN: Towards real-time object detection with region proposal networks,'' in \textit{Proc. Advances in Neural Information Processing Systems (NeurIPS)}, 2015.
+\bibitem{b6} W. Liu, D. Anguelov, D. Erhan, C. Szegedy, S. Reed, C.-Y. Fu, and A. C. Berg, ``SSD: Single shot multibox detector,'' in \textit{Proc. European Conference on Computer Vision (ECCV)}, 2016, pp. 21--37.
+\bibitem{b7} A. Bochkovskiy, C.-Y. Wang, and H.-Y. M. Liao, ``YOLOv4: Optimal speed and accuracy of object detection,'' arXiv:2004.10934, 2020.
+\bibitem{b8} C.-Y. Wang, A. Bochkovskiy, and H.-Y. M. Liao, ``YOLOv7: Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors,'' in \textit{Proc. IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2023, pp. 7464--7475.
+\bibitem{b9} G. Jocher, A. Chaurasia, and J. Qiu, ``Ultralytics YOLO,'' Ultralytics, 2023. [Online]. Available: \url{https://github.com/ultralytics/ultralytics}
+\bibitem{b10} C. E. Mohankumar and M. Arunachalam, ``Innovative object detection utilizing an improved version of the YOLO5 algorithm,'' in \textit{Proc. 2023 International Conference on Next Generation Electronics (NEleX)}, 2023, doi: 10.1109/NEleX59773.2023.10421517.
+\bibitem{b11} V. Venkatesan, P. Reddy, J. Deekshitha, and M. Ganesan, ``Enhanced YOLOv5-based framework for accurate defect detection of PCB using deep learning,'' in \textit{Proc. 5th International Conference on Artificial Intelligence and Signal Processing (AISP)}, 2025, pp. 1--5.
+\bibitem{b12} J. Hu, L. Shen, and G. Sun, ``Squeeze-and-excitation networks,'' in \textit{Proc. IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2018, pp. 7132--7141.
+\bibitem{b13} Q. Hou, D. Zhou, and J. Feng, ``Coordinate attention for efficient mobile network design,'' in \textit{Proc. IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2021, pp. 13713--13722.
+\bibitem{b14} S. T. Rajamani, K. Rajamani, R. Karthika, and B. W. Schuller, ``CBAM\_SAUNet: A novel attention U-Net for effective segmentation of corner cases,'' in \textit{Proc. 46th Annual International Conference of the IEEE Engineering in Medicine and Biology Society (EMBC)}, 2024.
+\bibitem{b15} muki2003, ``YOLO Drone Detection Dataset,'' Kaggle, 2022. \url{https://www.kaggle.com/datasets/muki2003/yolo-drone-detection-dataset}
+\end{thebibliography}
+
+\end{document}

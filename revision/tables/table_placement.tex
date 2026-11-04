@@ -1,18 +1,19 @@
 \begin{table}[!t]
 \centering
-\caption{Placement and attention-type ablation on the test split (seed 0). Added parameters are measured. Cells marked ``--'' require trained checkpoints / a GPU and were not run in this revision.}
+\caption{Placement and attention-type ablation on the test split (seed 0). Added parameters and GFLOPs are measured
+($640\times640$, GFLOPs $=2\times$MACs). Cells marked ``--'' require trained checkpoints / a GPU and were not run in this revision.}
 \label{tab:placement}
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lccc}
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lcccc}
 \toprule
-Configuration & Added params & mAP@0.5 & mAP@0.5:0.95 \\
+Configuration & +Params & +GFLOPs & mAP@0.5 & mAP@0.5:0.95 \\
 \midrule
-None (baseline) & 0 & -- & -- \\
-CBAM @ L12 & -- & -- & -- \\
-CBAM @ L15 & -- & -- & -- \\
-CBAM @ L12+L15 & +64,198 & -- & -- \\
-SE @ L12+L15 & +65,022 & -- & -- \\
-CoordAtt @ L12+L15 & +50,012 & -- & -- \\
+None (baseline) & +0 & +0.0000 & -- & -- \\
+CBAM @ L12 & +51,299 & +0.0005 & -- & -- \\
+CBAM @ L15 & +12,899 & +0.0013 & -- & -- \\
+CBAM @ L12+L15 & +64,198 & +0.0018 & -- & -- \\
+SE @ L12+L15 & +65,022 & +0.0001 & -- & -- \\
+CoordAtt @ L12+L15 & +50,012 & +0.0062 & -- & -- \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -28,6 +28,7 @@ echo "== Part A: facts check ==";               for s in a1_attachment_check a2_
 echo "== Part B: existing weights ==";          for s in b7_ap_by_size b8_latency b9_near_duplicates; do python revision/$s.py; done
 echo "== Part C: split + retraining ==";        python revision/c10_make_split.py
 python revision/c12_train_seeds.py          # baseline + CBAM, seeds 0/1/2   (6 runs)
+python revision/c13b_placement_cost.py      # params/GFLOPs per placement (no training)
 python revision/c13_placement_ablation.py   # L12, L15, SE, CoordAtt        (4 new runs)
 python revision/c11_train_sota.py           # YOLOv5x, YOLO11x, RT-DETR-X   (3 new runs)
 echo "== Part D: figures, tables, paper ==";

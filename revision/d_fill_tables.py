@@ -267,32 +267,40 @@ Model & P & R & mAP@0.5 & mAP@0.5:0.95 \\
 """)
 
 # ---------------------------------------------------------------- Table: placement / attention type
-abl = [("None (baseline)", "yolov8x_none_s0", "none"), ("CBAM @ L12", "yolov8x_cbam_L12_s0", None),
-       ("CBAM @ L15", "yolov8x_cbam_L15_s0", None), ("CBAM @ L12+L15", "yolov8x_cbam_s0", "cbam"),
+# Cost columns are measured without training (a3/a4 for both layers, c13b for single layers);
+# accuracy columns come from the GPU runs of c13_placement_ablation.py.
+c13b = (load_json("c13b_placement_cost") or {}).get("placements", {})
+cost = {"none": (0, 0.0)}
+for key in ("L12", "L15", "L12+L15"):
+    if key in c13b:
+        cost["cbam_" + key] = (c13b[key]["added_params"], c13b[key]["added_GFLOPs"])
+for key in ("se", "coord"):
+    cost[key] = (a3["variants"][key]["added_params"], a4["variants"][key]["added_GFLOPs_vs_baseline"])
+abl = [("None (baseline)", "yolov8x_none_s0", "none"), ("CBAM @ L12", "yolov8x_cbam_L12_s0", "cbam_L12"),
+       ("CBAM @ L15", "yolov8x_cbam_L15_s0", "cbam_L15"), ("CBAM @ L12+L15", "yolov8x_cbam_s0", "cbam_L12+L15"),
        ("SE @ L12+L15", "yolov8x_se_s0", "se"), ("CoordAtt @ L12+L15", "yolov8x_coord_s0", "coord")]
 arows, pend = [], False
 for label, name, key in abl:
     r = run(name)
-    added = PENDING
-    if key == "none":
-        added = "0"
-    elif key in a3["variants"]:
-        added = f"+{a3['variants'][key]['added_params']:,}"
-    elif r is not None:
-        added = f"+{r['params'] - a3['baseline_params']:,}"
+    if key in cost:
+        added_p, added_g = cost[key]
+        cost_cells = f"+{added_p:,} & +{added_g:.4f}"
+    else:
+        cost_cells = f"{PENDING} & {PENDING}"
     if r is None:
         pend = True
-        arows.append(f"{label} & {added} & {PENDING} & {PENDING} \\\\")
+        arows.append(f"{label} & {cost_cells} & {PENDING} & {PENDING} \\\\")
     else:
-        arows.append(f"{label} & {added} & {pct(r['test']['mAP50'])} & {pct(r['test']['mAP50_95'])} \\\\")
+        arows.append(f"{label} & {cost_cells} & {pct(r['test']['mAP50'])} & {pct(r['test']['mAP50_95'])} \\\\")
 write("table_placement", r"""\begin{table}[!t]
 \centering
-\caption{Placement and attention-type ablation on the test split (seed 0). Added parameters are measured.""" + (NOTE_PENDING if pend else "") + r"""}
+\caption{Placement and attention-type ablation on the test split (seed 0). Added parameters and GFLOPs are measured
+($640\times640$, GFLOPs $=2\times$MACs).""" + (NOTE_PENDING if pend else "") + r"""}
 \label{tab:placement}
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lccc}
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lcccc}
 \toprule
-Configuration & Added params & mAP@0.5 & mAP@0.5:0.95 \\
+Configuration & +Params & +GFLOPs & mAP@0.5 & mAP@0.5:0.95 \\
 \midrule
 """ + "\n".join(arows) + r"""
 \bottomrule

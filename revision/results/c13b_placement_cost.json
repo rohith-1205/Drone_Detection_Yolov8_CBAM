@@ -1,0 +1,66 @@
+{
+  "placements": {
+    "none": {
+      "attention": "none",
+      "layers": [],
+      "params": 68153571,
+      "GFLOPs": 258.1123072,
+      "added_params": 0,
+      "added_GFLOPs": 0.0,
+      "median_ms": 628.6555120000088,
+      "std_ms": 51.971466829452005,
+      "overhead_ms_paired_median": 0.0
+    },
+    "L12": {
+      "attention": "cbam",
+      "layers": [
+        12
+      ],
+      "params": 68204870,
+      "GFLOPs": 258.1128256,
+      "added_params": 51299,
+      "added_GFLOPs": 0.0005184000000326705,
+      "median_ms": 626.8016799999998,
+      "std_ms": 63.35614580307421,
+      "overhead_ms_paired_median": 1.8221245000091812
+    },
+    "L15": {
+      "attention": "cbam",
+      "layers": [
+        15
+      ],
+      "params": 68166470,
+      "GFLOPs": 258.1136128,
+      "added_params": 12899,
+      "added_GFLOPs": 0.0013056000000233325,
+      "median_ms": 642.8994649999993,
+      "std_ms": 65.00676860841968,
+      "overhead_ms_paired_median": 26.439104499999644
+    },
+    "L12+L15": {
+      "attention": "cbam",
+      "layers": [
+        12,
+        15
+      ],
+      "params": 68217769,
+      "GFLOPs": 258.1141312,
+      "added_params": 64198,
+      "added_GFLOPs": 0.0018239999999991596,
+      "median_ms": 618.5957040000005,
+      "std_ms": 50.203414597201494,
+      "overhead_ms_paired_median": -1.5491134999905398
+    }
+  },
+  "latency_device": "CPU, 4 threads, FP32",
+  "accuracy": "needs GPU training: python revision/c13_placement_ablation.py",
+  "_meta": {
+    "script": "c13b_placement_cost.py",
+    "created": "2026-11-03T19:40:55",
+    "python": "3.13.18",
+    "machine": "x86_64",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.201",
+    "device": "CPU"
+  }
+}
